@@ -1,3 +1,9 @@
+# Optimized by ci-cost (https://github.com/mariotavarez/ci-cost)
+# Applied 2 optimizations:
+# - [MEDIUM] Add concurrency group to "lints.yaml"
+# - [LOW] Use shallow clone in "commit" job
+# Estimated savings: ~2 min/run
+#
 name: Lint
 
 on:
@@ -14,6 +20,10 @@ on:
 
   pull_request:
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   format:
     name: Lint format
@@ -37,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Run commitlint
         uses: wagoid/commitlint-github-action@v6.2.1
